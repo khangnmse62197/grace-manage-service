@@ -37,10 +37,11 @@ public class UserController {
             request.getEmail(),
             request.getFirstName(),
             request.getLastName(),
-            request.getPassword()
+            request.getPassword(),
+            request.getRole()
         );
 
-        UserResponse response = mapToResponse(userDTO);
+        UserResponse response = userMapper.toResponse(userDTO);
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(ApiResponse.success(response, "User created successfully"));
@@ -51,7 +52,7 @@ public class UserController {
         log.info("Getting user with id: {}", id);
 
         UserDTO userDTO = userApplicationService.getUserById(id);
-        UserResponse response = mapToResponse(userDTO);
+        UserResponse response = userMapper.toResponse(userDTO);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -61,7 +62,7 @@ public class UserController {
         log.info("Getting user with email: {}", email);
 
         UserDTO userDTO = userApplicationService.getUserByEmail(email);
-        UserResponse response = mapToResponse(userDTO);
+        UserResponse response = userMapper.toResponse(userDTO);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -73,20 +74,6 @@ public class UserController {
         userApplicationService.deleteUser(id);
 
         return ResponseEntity.ok(ApiResponse.success(null, "User deleted successfully"));
-    }
-
-    private UserResponse mapToResponse(UserDTO userDTO) {
-        return UserResponse.builder()
-            .id(userDTO.getId())
-            .username(userDTO.getUsername())
-            .email(userDTO.getEmail())
-            .firstName(userDTO.getFirstName())
-            .lastName(userDTO.getLastName())
-            .fullName(userDTO.getFirstName() + " " + userDTO.getLastName())
-            .active(userDTO.getActive())
-            .createdAt(userDTO.getCreatedAt())
-            .updatedAt(userDTO.getUpdatedAt())
-            .build();
     }
 }
 
