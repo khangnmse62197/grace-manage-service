@@ -1,30 +1,24 @@
-package com.grace.gracemanageservice.presentation.response;
+package com.grace.gracemanageservice.application.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * User response DTO - API output
+ * Login response DTO - returned after successful authentication
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse {
-
+public class LoginResponseDTO {
     private Long id;
     private String username;
     private String email;
     private String firstName;
     private String lastName;
-    private String fullName;
     private String role;
     private Boolean active;
-    private Long createdAt;
-    private Long updatedAt;
 }
 

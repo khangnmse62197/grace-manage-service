@@ -2,6 +2,7 @@ package com.grace.gracemanageservice.presentation.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +37,8 @@ public class CreateUserRequest {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
+
+    @Pattern(regexp = "^(admin|user|viewer)$", message = "Role must be one of: admin, user, viewer")
+    private String role = "user";  // Default to 'user'
 }
 
