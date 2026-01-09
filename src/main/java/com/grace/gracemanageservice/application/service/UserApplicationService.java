@@ -26,9 +26,13 @@ public class UserApplicationService {
     private final UserRepository userRepository;
 
     public UserDTO createUser(String username, String email, String firstName, String lastName, String password) {
+        return createUser(username, email, firstName, lastName, password, "user");
+    }
+
+    public UserDTO createUser(String username, String email, String firstName, String lastName, String password, String role) {
         log.info("Creating user with email: {}", email);
 
-        User user = createUserUseCase.execute(username, email, firstName, lastName, password);
+        User user = createUserUseCase.execute(username, email, firstName, lastName, password, role);
 
         log.info("User created successfully with id: {}", user.getId());
         return userMapper.toDTO(user);
