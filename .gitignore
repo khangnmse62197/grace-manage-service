@@ -1,0 +1,29 @@
+# SQL Server Docker Container (local development only)
+sqlserver-data/
+
+# Environment files with sensitive data
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Maven
+target/
+*.class
+
+# Spring Boot
+*.jar
+*.war
+!.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# Docker
+.docker/
+
