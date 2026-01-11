@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 /**
  * User DTO - for internal data transfer between layers
  */
@@ -21,7 +23,7 @@ public class UserDTO {
     private String lastName;
     private String role;
     private Boolean active;
-    private Long createdAt;
-    private Long updatedAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 }
 

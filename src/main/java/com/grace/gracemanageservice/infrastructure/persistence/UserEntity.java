@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 /**
  * User JPA entity - database representation
  * Separate from domain User entity for database concerns
@@ -45,10 +47,10 @@ public class UserEntity {
     private Boolean active;
 
     @Column(name = "created_at")
-    private Long createdAt;
+    private LocalDate createdAt;
 
     @Column(name = "updated_at")
-    private Long updatedAt;
+    private LocalDate updatedAt;
 
     // Conversion methods between Entity and Domain
     public static UserEntity fromDomain(User user) {

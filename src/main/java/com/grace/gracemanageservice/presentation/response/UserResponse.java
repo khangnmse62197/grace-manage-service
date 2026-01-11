@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 /**
  * User response DTO - API output
  */
@@ -24,7 +26,7 @@ public class UserResponse {
     private String fullName;
     private String role;
     private Boolean active;
-    private Long createdAt;
-    private Long updatedAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 }
 

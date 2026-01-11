@@ -7,6 +7,8 @@ import com.grace.gracemanageservice.domain.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 /**
  * Create user use case - business logic for user creation
  * Contains only domain logic, no framework dependencies
@@ -37,7 +39,7 @@ public class CreateUserUseCase {
             .password(passwordEncoder.encode(password))
             .role(role != null ? role : "user")
             .active(true)
-            .createdAt(System.currentTimeMillis())
+            .createdAt(LocalDate.now())
             .build();
 
         return userRepository.save(user);

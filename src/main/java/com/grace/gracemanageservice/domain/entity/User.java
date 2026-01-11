@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 /**
  * User domain entity - core business object
  * Framework independent, represents the user concept
@@ -22,8 +24,8 @@ public class User {
     private String lastName;
     private String role;
     private Boolean active;
-    private Long createdAt;
-    private Long updatedAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 
     public String getFullName() {
         return firstName + " " + lastName;

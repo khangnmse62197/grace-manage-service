@@ -7,8 +7,8 @@ CREATE TABLE T_USER (
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     active BIT NOT NULL,
-    created_at BIGINT,
-    updated_at BIGINT
+    created_at DATE,
+    updated_at DATE
 );
 
 -- Create indexes for better query performance

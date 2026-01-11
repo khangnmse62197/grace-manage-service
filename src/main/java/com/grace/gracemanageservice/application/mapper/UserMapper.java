@@ -5,6 +5,7 @@ import com.grace.gracemanageservice.domain.entity.User;
 import com.grace.gracemanageservice.presentation.response.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -12,7 +13,8 @@ import org.mapstruct.factory.Mappers;
  * Uses MapStruct for automatic implementation
  * Ignores password field for security reasons
  */
-@Mapper(componentModel = "spring", unmappedSourcePolicy = org.mapstruct.ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedSourcePolicy = org.mapstruct.ReportingPolicy.IGNORE,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
