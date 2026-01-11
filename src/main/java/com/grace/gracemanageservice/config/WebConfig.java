@@ -12,8 +12,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
             .allowedOrigins("http://localhost:4200")  // Specify frontend origin
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-            .allowedHeaders("*")
-            .allowCredentials(true)  // ENABLE CREDENTIALS (COOKIES)
+            .allowedHeaders("*")  // Allow Authorization header
+            .exposedHeaders("Authorization")  // Expose Authorization header to frontend
+            // NOTE: allowCredentials NOT needed for Bearer token auth (only for cookies)
             .maxAge(3600);
     }
 }

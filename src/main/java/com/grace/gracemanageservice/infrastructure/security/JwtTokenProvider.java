@@ -1,6 +1,5 @@
 package com.grace.gracemanageservice.infrastructure.security;
 
-import com.grace.gracemanageservice.common.constant.AppConstants;
 import com.grace.gracemanageservice.domain.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -14,32 +13,39 @@ import java.util.Date;
 
 /**
  * JWT Token Provider - handles token generation and validation
+ * Supports dual-token strategy: access token (15 min) + refresh token (7 days)
  */
 @Component
 @Slf4j
 public class JwtTokenProvider {
 
+    private static final long ACCESS_TOKEN_EXPIRATION_MS = 15 * 60 * 1000; // 15 minutes
+    private static final long REFRESH_TOKEN_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000L; // 7 days
+
+    private static final String TOKEN_TYPE_ACCESS = "access";
+    private static final String TOKEN_TYPE_REFRESH = "refresh";
+
     private final SecretKey secretKey;
-    private final long jwtExpirationMs;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
         // Ensure secret is at least 256 bits (32 bytes) for HS256
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.jwtExpirationMs = AppConstants.JWT_EXPIRATION_MS;
     }
 
     /**
-     * Generate JWT token for authenticated user
+     * Generate ACCESS token for authenticated user (short-lived: 15 minutes)
+     * Contains full user claims: id, email, role
      */
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+        Date expiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_MS);
 
         return Jwts.builder()
             .subject(user.getUsername())
             .claim("id", user.getId())
             .claim("email", user.getEmail())
             .claim("role", user.getRole())
+            .claim("type", TOKEN_TYPE_ACCESS)
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(secretKey, Jwts.SIG.HS256)
@@ -47,15 +53,77 @@ public class JwtTokenProvider {
     }
 
     /**
+     * Generate REFRESH token for authenticated user (long-lived: 7 days)
+     * Contains minimal claims: id, username only
+     */
+    public String generateRefreshToken(User user) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
+
+        return Jwts.builder()
+            .subject(user.getUsername())
+            .claim("id", user.getId())
+            .claim("type", TOKEN_TYPE_REFRESH)
+            .issuedAt(now)
+            .expiration(expiryDate)
+            .signWith(secretKey, Jwts.SIG.HS256)
+            .compact();
+    }
+
+    /**
+     * Get access token expiration time in seconds
+     */
+    public long getAccessTokenExpirationSeconds() {
+        return ACCESS_TOKEN_EXPIRATION_MS / 1000;
+    }
+
+    /**
      * Extract username from JWT token
      */
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = parseToken(token);
+        return claims.getSubject();
+    }
+
+    /**
+     * Extract token type from JWT token
+     */
+    public String getTokenType(String token) {
+        Claims claims = parseToken(token);
+        return claims.get("type", String.class);
+    }
+
+    /**
+     * Check if token is an access token
+     */
+    public boolean isAccessToken(String token) {
+        try {
+            return TOKEN_TYPE_ACCESS.equals(getTokenType(token));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if token is a refresh token
+     */
+    public boolean isRefreshToken(String token) {
+        try {
+            return TOKEN_TYPE_REFRESH.equals(getTokenType(token));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Parse token and return claims
+     */
+    private Claims parseToken(String token) {
+        return Jwts.parser()
             .verifyWith(secretKey)
             .build()
             .parseSignedClaims(token)
             .getPayload();
-        return claims.getSubject();
     }
 
     /**
@@ -78,6 +146,20 @@ public class JwtTokenProvider {
             log.error("JWT claims string is empty");
         }
         return false;
+    }
+
+    /**
+     * Validate access token specifically (must be valid AND be access type)
+     */
+    public boolean validateAccessToken(String token) {
+        return validateToken(token) && isAccessToken(token);
+    }
+
+    /**
+     * Validate refresh token specifically (must be valid AND be refresh type)
+     */
+    public boolean validateRefreshToken(String token) {
+        return validateToken(token) && isRefreshToken(token);
     }
 }
 
