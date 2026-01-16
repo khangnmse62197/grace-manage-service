@@ -30,17 +30,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) {
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
+            // Use WebConfig's CORS mappings (Spring MVC) for security layer too
+            .cors(cors -> {})
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Allow browser preflight requests through security
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
                 .requestMatchers("/api/v1/auth/**").permitAll()  // Allow login/logout
+                .requestMatchers("/api/v1/roles/**").hasRole("ADMIN")  // Role management - ADMIN only
+                .requestMatchers("/api/v1/permissions/**").hasRole("ADMIN")  // Permissions - ADMIN only
                 .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "USER")  // Require authentication
                 .anyRequest().authenticated()
             )
