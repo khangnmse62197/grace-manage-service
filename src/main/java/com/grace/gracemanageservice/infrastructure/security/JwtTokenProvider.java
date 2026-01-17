@@ -109,7 +109,12 @@ public class JwtTokenProvider {
      */
     public boolean isRefreshToken(String token) {
         try {
-            return TOKEN_TYPE_REFRESH.equals(getTokenType(token));
+            String tokenType = getTokenType(token);
+            boolean isRefresh = TOKEN_TYPE_REFRESH.equals(tokenType);
+            if(!isRefresh) {
+                log.error("Expected refresh token but found type: {}", tokenType);
+            }
+            return isRefresh;
         } catch (Exception e) {
             return false;
         }
@@ -149,6 +154,25 @@ public class JwtTokenProvider {
     }
 
     /**
+     * Check if token is expired (throws ExpiredJwtException)
+     */
+    public boolean isTokenExpired(String token) {
+        try {
+            Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token);
+            return false;
+        } catch (ExpiredJwtException ex) {
+            log.warn("Token is expired");
+            return true;
+        } catch (Exception ex) {
+            // For other exceptions, we'll handle them in validateToken
+            return false;
+        }
+    }
+
+    /**
      * Validate access token specifically (must be valid AND be access type)
      */
     public boolean validateAccessToken(String token) {
@@ -159,7 +183,7 @@ public class JwtTokenProvider {
      * Validate refresh token specifically (must be valid AND be refresh type)
      */
     public boolean validateRefreshToken(String token) {
-        return validateToken(token) && isRefreshToken(token);
+        return !validateToken(token) || !isRefreshToken(token);
     }
 }
 

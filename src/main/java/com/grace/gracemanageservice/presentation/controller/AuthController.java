@@ -83,7 +83,7 @@ public class AuthController {
         String refreshToken = authHeader.substring(7);
 
         // Validate refresh token
-        if (!jwtTokenProvider.validateRefreshToken(refreshToken)) {
+        if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
             log.warn("Invalid or expired refresh token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResponse.error("Invalid or expired refresh token"));
