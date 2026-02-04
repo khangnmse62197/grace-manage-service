@@ -28,5 +28,8 @@ public class UserResponse {
     private Boolean active;
     private LocalDate createdAt;
     private LocalDate updatedAt;
+    private Integer age;
+    private Long roleId;
+    private java.time.LocalDateTime lastCheckInTime;
+    private java.time.LocalDateTime lastCheckOutTime;
 }
-

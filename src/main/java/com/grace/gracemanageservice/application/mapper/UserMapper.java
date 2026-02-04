@@ -13,8 +13,7 @@ import org.mapstruct.factory.Mappers;
  * Uses MapStruct for automatic implementation
  * Ignores password field for security reasons
  */
-@Mapper(componentModel = "spring", unmappedSourcePolicy = org.mapstruct.ReportingPolicy.IGNORE,
-        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(componentModel = "spring", unmappedSourcePolicy = org.mapstruct.ReportingPolicy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface UserMapper {
 
     UserDTO toDTO(User user);
@@ -22,6 +21,6 @@ public interface UserMapper {
     User toEntity(UserDTO userDTO);
 
     @Mapping(target = "fullName", expression = "java(userDTO.getFirstName() + \" \" + userDTO.getLastName())")
+    @Mapping(target = "age", expression = "java(userDTO.getDateOfBirth() != null ? java.time.Period.between(userDTO.getDateOfBirth(), java.time.LocalDate.now()).getYears() : null)")
     UserResponse toResponse(UserDTO userDTO);
 }
-

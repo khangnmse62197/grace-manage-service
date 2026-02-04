@@ -30,19 +30,19 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findById(Long id) {
         return userJpaRepository.findById(id)
-            .map(UserEntity::toDomain);
+                .map(UserEntity::toDomain);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
         return userJpaRepository.findByEmail(email)
-            .map(UserEntity::toDomain);
+                .map(UserEntity::toDomain);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
         return userJpaRepository.findByUsername(username)
-            .map(UserEntity::toDomain);
+                .map(UserEntity::toDomain);
     }
 
     @Override
@@ -51,8 +51,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public java.util.List<User> findAll() {
+        return userJpaRepository.findAll().stream()
+                .map(UserEntity::toDomain)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
     public long count() {
         return userJpaRepository.count();
     }
 }
-

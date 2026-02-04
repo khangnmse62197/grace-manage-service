@@ -4,6 +4,7 @@ import com.grace.gracemanageservice.application.dto.UserDTO;
 import com.grace.gracemanageservice.application.mapper.UserMapper;
 import com.grace.gracemanageservice.application.service.UserApplicationService;
 import com.grace.gracemanageservice.presentation.request.CreateUserRequest;
+import com.grace.gracemanageservice.presentation.request.UpdateUserRequest;
 import com.grace.gracemanageservice.presentation.response.ApiResponse;
 import com.grace.gracemanageservice.presentation.response.UserResponse;
 import jakarta.validation.Valid;
@@ -33,18 +34,19 @@ public class UserController {
         log.info("Creating user with email: {}", request.getEmail());
 
         UserDTO userDTO = userApplicationService.createUser(
-            request.getUsername(),
-            request.getEmail(),
-            request.getFirstName(),
-            request.getLastName(),
-            request.getPassword(),
-            request.getRole()
-        );
+                request.getUsername(),
+                request.getEmail(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getPassword(),
+                request.getRole(),
+                request.getDateOfBirth(),
+                request.getRoleId());
 
         UserResponse response = userMapper.toResponse(userDTO);
         return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(ApiResponse.success(response, "User created successfully"));
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(response, "User created successfully"));
     }
 
     @GetMapping("/{id}")
@@ -67,6 +69,18 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<java.util.List<UserResponse>>> getAllUsers() {
+        log.info("Getting all users");
+
+        java.util.List<UserDTO> users = userApplicationService.getAllUsers();
+        java.util.List<UserResponse> response = users.stream()
+                .map(userMapper::toResponse)
+                .collect(java.util.stream.Collectors.toList());
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
         log.info("Deleting user with id: {}", id);
@@ -75,5 +89,17 @@ public class UserController {
 
         return ResponseEntity.ok(ApiResponse.success(null, "User deleted successfully"));
     }
-}
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequest request) {
+
+        log.info("Updating user with id: {}", id);
+
+        UserDTO userDTO = userApplicationService.updateUser(id, request);
+        UserResponse response = userMapper.toResponse(userDTO);
+
+        return ResponseEntity.ok(ApiResponse.success(response, "User updated successfully"));
+    }
+}

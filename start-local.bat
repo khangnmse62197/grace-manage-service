@@ -1,26 +1,28 @@
 @echo off
-echo Password: YourStrong@Password123
-echo Username: sa
-echo Database: grace_db
+echo Starting SQL Server container...
+docker-compose up -d
+
 echo.
-echo 3. Stop: docker-compose down
-echo 2. View logs: docker-compose logs -f sqlserver
-echo 1. Run Spring Boot: mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
-echo Next steps:
+echo Waiting for SQL Server to start (30 seconds)...
+timeout /t 30 /nobreak
+
+echo.
+echo Checking SQL Server health...
+docker-compose ps
+
 echo.
 echo SQL Server is ready!
 echo.
+echo Starting Spring Boot application...
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
 
-docker-compose ps
-echo Checking SQL Server health...
 echo.
-
-timeout /t 30 /nobreak
-echo Waiting for SQL Server to start (30 seconds)...
+echo Next steps (if application stopped):
+echo 1. Run Spring Boot: mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
+echo 2. View logs: docker-compose logs -f sqlserver
+echo 3. Stop: docker-compose down
 echo.
-
-docker-compose up -d
-echo Starting SQL Server container...
-
-REM Quick setup script for local SQL Server with Docker
+echo Database: grace_db
+echo Username: sa
+echo Password: YourStrong@Password123
 

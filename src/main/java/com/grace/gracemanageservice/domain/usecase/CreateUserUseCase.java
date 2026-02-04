@@ -3,6 +3,7 @@ package com.grace.gracemanageservice.domain.usecase;
 import com.grace.gracemanageservice.application.exception.ValidationException;
 import com.grace.gracemanageservice.common.validator.EmailValidator;
 import com.grace.gracemanageservice.domain.entity.User;
+import com.grace.gracemanageservice.domain.repository.RoleRepository;
 import com.grace.gracemanageservice.domain.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -17,35 +18,47 @@ import java.time.LocalDate;
 public class CreateUserUseCase {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public CreateUserUseCase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CreateUserUseCase(UserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User execute(String username, String email, String firstName, String lastName, String password, String role) {
+    public User execute(String username, String email, String firstName, String lastName, String password, String role,
+            LocalDate dateOfBirth, Long roleId) {
         // Validation
         validateInput(username, email, firstName, lastName, password, role);
         validateEmailUniqueness(email);
         validateUsernameUniqueness(username);
 
+        if (roleId != null && !roleRepository.existsById(roleId)) {
+            throw new ValidationException("roleId", "Role not found with id: " + roleId);
+        }
+
         // Business logic
         User user = User.builder()
-            .username(username)
-            .email(email)
-            .firstName(firstName)
-            .lastName(lastName)
-            .password(passwordEncoder.encode(password))
-            .role(role != null ? role : "user")
-            .active(true)
-            .createdAt(LocalDate.now())
-            .build();
+                .username(username)
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .password(passwordEncoder.encode(password))
+                .role(role != null ? role : "user")
+                .dateOfBirth(dateOfBirth)
+                .roleId(roleId)
+                .active(true)
+                .createdAt(LocalDate.now())
+                .build();
 
         return userRepository.save(user);
     }
 
-    private void validateInput(String username, String email, String firstName, String lastName, String password, String role) {
+    private void validateInput(String username, String email, String firstName, String lastName, String password,
+            String role) {
         if (username == null || username.isBlank()) {
             throw new ValidationException("username", "Username is required");
         }
@@ -81,4 +94,3 @@ public class CreateUserUseCase {
         }
     }
 }
-

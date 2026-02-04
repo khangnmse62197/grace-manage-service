@@ -52,35 +52,54 @@ public class UserEntity {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "role_id")
+    private Long roleId;
+
+    @Column(name = "last_check_in_time")
+    private java.time.LocalDateTime lastCheckInTime;
+
+    @Column(name = "last_check_out_time")
+    private java.time.LocalDateTime lastCheckOutTime;
+
     // Conversion methods between Entity and Domain
     public static UserEntity fromDomain(User user) {
         return UserEntity.builder()
-            .id(user.getId())
-            .username(user.getUsername())
-            .email(user.getEmail())
-            .password(user.getPassword())
-            .firstName(user.getFirstName())
-            .lastName(user.getLastName())
-            .role(user.getRole())
-            .active(user.getActive())
-            .createdAt(user.getCreatedAt())
-            .updatedAt(user.getUpdatedAt())
-            .build();
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .role(user.getRole())
+                .active(user.getActive())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .dateOfBirth(user.getDateOfBirth())
+                .roleId(user.getRoleId())
+                .lastCheckInTime(user.getLastCheckInTime())
+                .lastCheckOutTime(user.getLastCheckOutTime())
+                .build();
     }
 
     public User toDomain() {
         return User.builder()
-            .id(this.id)
-            .username(this.username)
-            .email(this.email)
-            .password(this.password)
-            .firstName(this.firstName)
-            .lastName(this.lastName)
-            .role(this.role)
-            .active(this.active)
-            .createdAt(this.createdAt)
-            .updatedAt(this.updatedAt)
-            .build();
+                .id(this.id)
+                .username(this.username)
+                .email(this.email)
+                .password(this.password)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .role(this.role)
+                .active(this.active)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .dateOfBirth(this.dateOfBirth)
+                .roleId(this.roleId)
+                .lastCheckInTime(this.lastCheckInTime)
+                .lastCheckOutTime(this.lastCheckOutTime)
+                .build();
     }
 }
-

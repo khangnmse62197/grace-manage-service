@@ -15,7 +15,11 @@ docker-compose ps
 echo ""
 echo "SQL Server is ready!"
 echo ""
-echo "Next steps:"
+echo "Starting Spring Boot application..."
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
+
+echo ""
+echo "Next steps (if application stopped):"
 echo "1. Run Spring Boot: mvn spring-boot:run -Dspring-boot.run.arguments=\"--spring.profiles.active=local\""
 echo "2. View logs: docker-compose logs -f sqlserver"
 echo "3. Stop: docker-compose down"

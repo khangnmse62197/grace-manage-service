@@ -39,6 +39,9 @@ public class CreateUserRequest {
     private String password;
 
     @Pattern(regexp = "^(admin|user|viewer)$", message = "Role must be one of: admin, user, viewer")
-    private String role = "user";  // Default to 'user'
-}
+    private String role = "user"; // Default to 'user'
 
+    private java.time.LocalDate dateOfBirth;
+
+    private Long roleId;
+}

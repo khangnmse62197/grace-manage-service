@@ -20,6 +20,7 @@ public interface UserRepository {
 
     void deleteById(Long id);
 
+    java.util.List<User> findAll();
+
     long count();
 }
-

@@ -27,6 +27,12 @@ public class User {
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
+    // Employee management fields
+    private LocalDate dateOfBirth;
+    private Long roleId;
+    private java.time.LocalDateTime lastCheckInTime;
+    private java.time.LocalDateTime lastCheckOutTime;
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
@@ -39,5 +45,3 @@ public class User {
         return "admin".equalsIgnoreCase(role);
     }
 }
-
-

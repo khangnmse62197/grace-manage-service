@@ -25,5 +25,8 @@ public class UserDTO {
     private Boolean active;
     private LocalDate createdAt;
     private LocalDate updatedAt;
+    private LocalDate dateOfBirth;
+    private Long roleId;
+    private java.time.LocalDateTime lastCheckInTime;
+    private java.time.LocalDateTime lastCheckOutTime;
 }
-
